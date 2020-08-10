@@ -6,5 +6,5 @@ R \
 -e 'library(stats)' \
 -e 'library(data.table)' \
 -e 'library(Rserve)' \
--e 'source("functions.R")' \
+-e 'source("lib/functions.R")' \
 -e 'run.Rserve(debug = TRUE, config.file = "'${CONFIG_PATH}'")'
