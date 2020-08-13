@@ -27,6 +27,31 @@ groupSummary <- function(data, col, group = NULL, panel = NULL) {
 }
 
 
+fences <- function(x) {
+  summary <- quantile(x)
+  iqr <- summary[4] - summary[2]
+  lowerfence <- summary[2] - (1.5*iqr)
+  upperfence <- summary[4] + (1.5*iqr)
+
+  return(c(lowerfence, upperfence))
+}
+
+## TODO groupFences to return lowerfence and upperfence for boxplots
+groupFences <- function(data, col, group = NULL, panel = NULL) {
+  aggStr <- getAggStr(col, group, panel)
+
+  if (aggStr == col) {
+    dt <- as.data.table(t(fences(data[[col]])))
+  } else {
+    dt <- as.data.table(aggregate(as.formula(aggStr), data, fences))
+  }
+
+  names(dt) <- c(group, panel, 'lowerfence', 'upperfence')
+
+  return(dt)
+}
+
+
 groupMean <- function(data, col, group = NULL, panel = NULL) {
   aggStr <- getAggStr(col, group, panel)
 
@@ -73,12 +98,9 @@ groupSize <- function(data, col, group = NULL, panel = NULL) {
 
 
 outliers <- function(x) {
-  summary <- quantile(x)
-  iqr <- summary[4] - summary[2]
-  lowCutoff <- summary[2] - (1.5*iqr)
-  highCutoff <- summary[4] + (1.5*iqr)
+  fences <- fences(x)
 
-  return(x[x < lowCutoff | x > highCutoff])
+  return(x[x < fences[1] | x > fences[2]])
 }
 
 groupOutliers <- function(data, col, group = NULL, panel = NULL) {
