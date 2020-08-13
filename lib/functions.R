@@ -299,4 +299,62 @@ noStatsFacet <- function(data, col, group = NULL, panel = NULL) {
 }
 
 
+epitabToDT <- function(m, method) {
+  dt <- as.data.table(m)
+  dt$group <- rownames(m)
+  dt$x <- list(names(dt)[c(1,3)])
+  dt <- transform(dt, "interval" = paste(lower, " - ", upper))
+  dt$lower <- NULL
+  dt$upper <- NULL
+  names(dt) <- c('cond1', 'proportion1', 'cond2', 'proportion2', method, 'pvalue', 'group', 'x', 'interval')
+  dt$y <- lapply(dt$group, FUN = function(x){c(dt$cond1[dt$group == x], dt$cond2[dt$group == x])})
+  dt$proportions <- lapply(dt$group, FUN = function(x){c(dt$proportion1[dt$group == x], dt$proportion2[dt$group == x])})
+  dt$cond1 <- NULL
+  dt$cond2 <- NULL
+  dt$proportion1 <- NULL
+  dt$proportion2 <- NULL
 
+  return(dt)
+}
+
+oddsRatio <- function(group, col) {
+  m <- epitab(group, col, method = "oddsratio")$tab
+  dt <- epitabToDT(m, 'oddsratio')
+ 
+  return(dt)
+}
+
+relativeRisk <- function(group, col) {
+  m <- epitab(group, col, method = "riskratio")$tab
+  dt <- epitabToDT(m, 'relativerisk')
+
+  return(dt)
+}
+
+panelOddsRatio <- function(data, col, group, panel = NULL) {
+
+  if (is.null(panel)) {
+    dt <- oddsRatio(data[[group]], data[[col]])
+  } else {
+    dt.list <- split(data, list(data[[panel]]))
+    dt.list <- lapply(dt.list, oddsRatio)
+    dt <- reduce(dt.list, rbind)
+    dt$panel <- names(dt.list)    
+  }
+
+  return(dt)
+}
+
+panelRelativeRisk <- function(data, col, group, panel = NULL) {
+
+  if (is.null(panel)) {
+    dt <- relativeRisk(data[[group]], data[[col]])
+  } else {
+    dt.list <- split(data, list(data[[panel]]))
+    dt.list <- lapply(dt.list, relativeRisk)
+    dt <- reduce(dt.list, rbind)
+    dt$panel <- names(dt.list)
+  }
+
+  return(dt)
+}
