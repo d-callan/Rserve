@@ -21,8 +21,7 @@ groupSummary <- function(data, col, group = NULL, panel = NULL) {
     dt <- as.data.table(aggregate(as.formula(aggStr), data, FUN = function(x){round(quantile(x),4)}))
   }
 
-  colNames <- c(group, panel, 'min', 'q1', 'median', 'q3', 'max')
-  names(dt) <- colNames
+  names(dt) <- c(group, panel, 'min', 'q1', 'median', 'q3', 'max')
 
   return(dt)
 }
@@ -37,8 +36,7 @@ groupMean <- function(data, col, group = NULL, panel = NULL) {
     dt <- as.data.table(aggregate(as.formula(aggStr), data, FUN = function(x){round(mean(x),4)}))
   }
 
-  colNames <- c(group, panel, 'mean')
-  names(dt) <- colNames
+  names(dt) <- c(group, panel, 'mean')
 
   return(dt)
 }
@@ -53,8 +51,7 @@ groupSD <- function(data, col, group = NULL, panel = NULL) {
     dt <- as.data.table(aggregate(as.formula(aggStr), data, FUN = function(x){round(sd(x),4)}))
   }
 
-  colNames <- c(group, panel, 'sd')
-  names(dt) <- colNames
+  names(dt) <- c(group, panel, 'sd')
 
   return(dt)
 }
@@ -69,8 +66,7 @@ groupSize <- function(data, col, group = NULL, panel = NULL) {
     dt <- as.data.table(aggregate(as.formula(aggStr), data, length))
   }
 
-  colNames <- c(group, panel, 'size')
-  names(dt) <- colNames
+  names(dt) <- c(group, panel, 'size')
 
   return(dt)
 }
@@ -94,8 +90,7 @@ groupOutliers <- function(data, col, group = NULL, panel = NULL) {
     dt <- as.data.table(aggregate(as.formula(aggStr), data, outliers))
   }
 
-  colNames <- c(group, panel, 'outliers')
-  names(dt) <- colNames
+  names(dt) <- c(group, panel, 'outliers')
 
   return(dt)
 }
@@ -117,8 +112,7 @@ groupDensity <- function(data, col, group = NULL, panel = NULL) {
     dt <- as.data.table(aggregate(as.formula(aggStr), data, densityCurve))
   }
 
-  colNames <- c(group, panel, 'x', 'y')
-  names(dt) <- colNames
+  names(dt) <- c(group, panel, 'x', 'y')
 
   return(dt)
 }
@@ -198,7 +192,7 @@ smoothedMean <- function(dt, method) {
     stop('Unrecognized smoothing method.')
   }
 
-  return(data.table("x" = list(dt$x), "y" = list(dt$y), "ymin" = list(dt$ymin), "ymax" = list(dt$ymax), "se" = list(dt$se)))
+  return(data.table("x" = list(smoothed$x), "y" = list(smoothed$y), "ymin" = list(smoothed$ymin), "ymax" = list(smoothed$ymax), "se" = list(smoothed$se)))
 }
 
 ## TODO from here down optimize !!
@@ -289,3 +283,19 @@ binProportion <- function(data, col, group = NULL, panel = NULL, binWidth) {
 
   return(dt)
 }
+
+
+noStatsFacet <- function(data, col, group = NULL, panel = NULL) {
+  aggStr <- getAggStr(col, group, panel)
+
+  if (aggStr == col) {
+    dt <- data.table(col = list(data[[col]]))
+  } else {
+    dt <- as.data.table(aggregate(as.formula(aggStr), data, list))
+  }
+
+  return(dt)
+}
+
+
+
