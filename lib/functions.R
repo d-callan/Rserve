@@ -235,6 +235,7 @@ bin <- function(x, binWidth) {
 }
 
 #get size/ proportion per group per panel
+## TODO consider using noStatsFacet to generate the lists
 binSize <- function(data, col, group = NULL, panel = NULL, binWidth) {
   aggStr <- getAggStr(col, group, panel)
   aggStr2 <- paste(c(aggStr, 'x'), collapse = " + ")

@@ -9,6 +9,10 @@ RUN useradd rserve \
 ## install libs
 RUN R -e "install.packages('Rserve', version='1.8-7', repos='http://rforge.net')"
 RUN R -e "install.packages('data.table', version='1.13.0')"
+RUN R -e "install.packages('epitools', version='0.5-10.1')"
+RUN R -e "install.packages('purrr', version='0.3.4')"
+RUN R -e "install.packages('mgcv', version='1.8-31')"
+
 
 ## Rserve
 RUN mkdir -p /opt/rserve
