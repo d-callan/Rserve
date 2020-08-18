@@ -3,9 +3,7 @@
 CONFIG_PATH=${RSERVE_HOME}/etc/Rserve.conf
 
 R \
--e 'library(epitools)' \
--e 'library(mgcv)' \
--e 'library(purrr)' \
+-e 'library(plot.data)' \
 -e 'library(data.table)' \
 -e 'library(Rserve)' \
 -e 'source("lib/functions.R")' \
