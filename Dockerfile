@@ -18,10 +18,10 @@ RUN R -e "remotes::install_github('d-callan/plot.data')"
 RUN mkdir -p /opt/rserve
 ENV RSERVE_HOME /opt/rserve
 
-COPY etc ${RSERVE_HOME}/etc
+COPY etc/Rserv.conf /etc/Rserv.conf
 COPY run_rserve.sh ${RSERVE_HOME}/bin/
-RUN mkdir /home/rserve/lib
-COPY lib/functions.R /home/rserve/lib
+RUN mkdir ${RSERVE_HOME}/lib
+COPY lib/functions.R ${RSERVE_HOME}/lib
 RUN chmod 755 ${RSERVE_HOME}/bin/run_rserve.sh
 
 RUN mkdir ${RSERVE_HOME}/work
